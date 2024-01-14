@@ -1,10 +1,10 @@
-// const mongooseConnectDB = require("./config/mongoose.config");
+const mongooseConnectDB = require("./config/mongoose.config");
 
 const dev = process.env.NODE_ENV !== "production";
 const port = process.env.PORT || 3001;
 
 const app = require("./app");
-// mongooseConnectDB();
+mongooseConnectDB();
 
 app.listen(port, (err) => {
     if (err) throw err;
