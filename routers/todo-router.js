@@ -25,7 +25,7 @@ router.post(
 
 router.delete("/:id", todoController.deleteTodo);
 
-router.patch("/:id", todoController.updateTodo);
+router.put("/:id", todoController.updateTodo);
 
 router.get("/", todoController.getToDos);
 

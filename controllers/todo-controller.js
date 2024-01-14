@@ -42,7 +42,32 @@ const getToDos = async (req, res) => {
 };
 
 const deleteTodo = async (req, res) => {
-    res.json({ msg: "delete todo" });
+    try {
+        const { id } = req.params;
+        if (!id.match(/^[0-9a-fA-F]{24}$/)) {
+            res.status(400).json({
+                result: "error",
+                data: "invalid ID format",
+            });
+        }
+
+        const data = await TodoSchema.findByIdAndDelete(id);
+
+        if (data) {
+            res.json({
+                result: "success",
+                data: "resource deleted",
+            });
+        } else {
+            res.status(404).json({
+                result: "error",
+                data: "resource not found",
+            });
+        }
+    } catch (e) {
+        console.log("error", e);
+        res.status(501).send(e?.message);
+    }
 };
 
 exports.getToDos = getToDos;
