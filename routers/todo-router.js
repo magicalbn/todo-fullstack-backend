@@ -5,7 +5,7 @@ const todoController = require("../controllers/todo-controller");
 
 let router = express.Router();
 
-const validStatusValues = ["todo", "inprogress", "done", "completed"];
+const validStatusValues = ["todo", "inprogress", "done"];
 
 router.post(
     "/",
