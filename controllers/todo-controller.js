@@ -21,15 +21,54 @@ const createTodo = async (req, res) => {
 };
 
 const updateTodo = async (req, res) => {
-    res.json({ msg: "update todo" });
+    try {
+        const validationErros = validationResult(req);
+        if (!validationErros.isEmpty()) {
+            return res.status(400).send({ error: validationErros.array() });
+        }
+        const { title, description, status } = req.body;
+
+        const { id } = req.params;
+        if (!id.match(/^[0-9a-fA-F]{24}$/)) {
+            res.status(400).json({
+                result: "error",
+                data: "invalid ID format",
+            });
+        }
+
+        await TodoSchema.findOneAndUpdate(
+            { _id: id },
+            { title, description, status }
+        );
+        res.status(201).json({
+            result: "success",
+            data: "resource updated",
+        });
+    } catch (e) {
+        console.log("error", e);
+        res.status(501).send(e?.message);
+    }
 };
 
 const getToDos = async (req, res) => {
     try {
         const { status } = req.query;
+        //default pagination => first page with 10 entries
+        const page = parseInt(req.query.page) || 1;
+        const limit = parseInt(req.query.limit) || 10;
+
         const filter = status ? { status } : {};
 
-        const data = await TodoSchema.find(filter).sort({ created_at: -1 });
+        const skip = (page - 1) * limit;
+
+        const totalTodos = await TodoSchema.countDocuments();
+        const totalPages = Math.ceil(totalTodos / limit);
+
+        const data = await TodoSchema.find(filter)
+            .select("-__v")
+            .skip(skip)
+            .limit(limit)
+            .sort({ created_at: -1 });
 
         res.json({
             result: "success",

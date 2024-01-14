@@ -25,7 +25,21 @@ router.post(
 
 router.delete("/:id", todoController.deleteTodo);
 
-router.put("/:id", todoController.updateTodo);
+router.put(
+    "/:id",
+    body("title").isString().trim().notEmpty(),
+    body("description").exists(),
+    body("status").custom((value) => {
+        if (!validStatusValues.includes(value)) {
+            throw new Error(
+                `Invalid status value. Allowed values: ${validStatusValues.join(
+                    ", "
+                )}`
+            );
+        } else return true;
+    }),
+    todoController.updateTodo
+);
 
 router.get("/", todoController.getToDos);
 
