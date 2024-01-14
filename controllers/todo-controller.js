@@ -40,7 +40,7 @@ const updateTodo = async (req, res) => {
             { _id: id },
             { title, description, status }
         );
-        res.status(201).json({
+        res.status(200).json({
             result: "success",
             data: "resource updated",
         });
@@ -61,7 +61,7 @@ const getToDos = async (req, res) => {
 
         const skip = (page - 1) * limit;
 
-        const totalTodos = await TodoSchema.countDocuments();
+        const totalTodos = await TodoSchema.countDocuments(filter);
         const totalPages = Math.ceil(totalTodos / limit);
 
         const data = await TodoSchema.find(filter)
@@ -73,6 +73,12 @@ const getToDos = async (req, res) => {
         res.json({
             result: "success",
             data: data,
+            pagination: {
+                page: page,
+                limit: limit,
+                total: totalTodos,
+                pages: totalPages,
+            },
         });
     } catch (e) {
         console.log("error", e);

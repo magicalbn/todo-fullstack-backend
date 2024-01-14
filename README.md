@@ -2,6 +2,10 @@
 
 A simple ToDo application built with Node.js and Express, with Jest used for testing.
 
+## Hosted using Vercel
+
+https://todo-fullstack-backend.vercel.app/
+
 ## Features
 
 -   Create, Update, Read and Delete operations for todo items.
