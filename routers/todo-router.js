@@ -5,7 +5,23 @@ const todoController = require("../controllers/todo-controller");
 
 let router = express.Router();
 
-router.post("/", todoController.createTodo);
+const validStatusValues = ["todo", "inprogress", "done", "completed"];
+
+router.post(
+    "/",
+    body("title").isString().trim().notEmpty(),
+    body("description").exists(),
+    body("status").custom((value) => {
+        if (!validStatusValues.includes(value)) {
+            throw new Error(
+                `Invalid status value. Allowed values: ${validStatusValues.join(
+                    ", "
+                )}`
+            );
+        } else return true;
+    }),
+    todoController.createTodo
+);
 
 router.delete("/:id", todoController.deleteTodo);
 
